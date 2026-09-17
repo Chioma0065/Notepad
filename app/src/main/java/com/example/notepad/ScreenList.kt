@@ -1,5 +1,6 @@
 package com.example.notepad
 
 data class NotePad(
-    val entry : String
+    val title: String,
+    val entry: String
 )

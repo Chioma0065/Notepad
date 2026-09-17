@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
@@ -19,20 +18,23 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
 fun ScreenA(
-    navController: NavController
+    navController: NavController, screenViewModel: ScreenViewModel
 ) {
+    val uiState by screenViewModel.uiState.collectAsState()
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -45,11 +47,9 @@ fun ScreenA(
                 .padding(5.dp)
                 .height(40.dp)
                 .statusBarsPadding()
-//                .safeDrawingPadding()
         ) {
             Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "NOTEPAD",
@@ -63,12 +63,10 @@ fun ScreenA(
         Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedCard(
-            border = BorderStroke(1.dp, Color.Black),
-            modifier = Modifier.fillMaxWidth()
+            border = BorderStroke(1.dp, Color.Black), modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "My Notes",
-                modifier = Modifier.padding(8.dp)
+                text = "My Notes", modifier = Modifier.padding(8.dp)
             )
         }
 
@@ -79,14 +77,19 @@ fun ScreenA(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "No notes")
+            if (uiState.note.isEmpty()) {
+                Text("No notes")
+            } else {
+                uiState.note.forEach { note ->
+                    Text(text = note.entry)
+                }
+            }
         }
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            contentAlignment = Alignment.CenterEnd
+                .padding(8.dp), contentAlignment = Alignment.CenterEnd
         ) {
             IconButton(onClick = {
                 navController.navigate(Routes.screenB)

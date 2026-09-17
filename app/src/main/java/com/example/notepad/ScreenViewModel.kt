@@ -11,22 +11,18 @@ class ScreenViewModel : ViewModel() {
     val uiState = _uiState.asStateFlow()
 
 
-    fun noteEntry(){
-        _uiState.update { currentState->
-            val text = NotePad(entry = currentState.userInput)
+    fun noteEntry() {
+        _uiState.update { currentState ->
+            val text = NotePad(title = currentState.userInput, entry = currentState.userInput)
             currentState.copy(
-                note = currentState.note + text,
-                userInput = ""
+                note = currentState.note + text, userInput = ""
             )
         }
     }
 
-
-//    fun noteEntry(text: String){
-//        _uiState.update { currentState ->
-//            currentState.copy(
-//                entry = text
-//            )
-//        }
-//    }
+    fun updateUserInput(text: String) {
+        _uiState.update { it.copy(userInput = text) }
+    }
 }
+
+

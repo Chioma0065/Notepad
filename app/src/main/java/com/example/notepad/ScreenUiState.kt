@@ -1,6 +1,5 @@
 package com.example.notepad
 
-data class ScreenUiState (
-    var userInput : String = "",
-    val note : List<NotePad> = emptyList()
+data class ScreenUiState(
+    var userInput: String = "", val note: List<NotePad> = emptyList()
 )
