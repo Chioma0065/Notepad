@@ -59,7 +59,7 @@ fun ScreenB(navController: NavController, viewModel: ScreenViewModel) {
             )
 
             IconButton(onClick = {
-                viewModel.noteEntry()
+                viewModel.noteEntry(title, text)
                 navController.popBackStack()
             }) {
                 Icon(
