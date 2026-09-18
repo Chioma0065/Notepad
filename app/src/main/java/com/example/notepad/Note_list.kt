@@ -37,8 +37,8 @@ fun ScreenB(navController: NavController, viewModel: ScreenViewModel, noteIndex:
     val uiState by viewModel.uiState.collectAsState()
     val existingNote = if (noteIndex >= 0) uiState.note.getOrNull(noteIndex) else null
 
-    var title by remember { mutableStateOf("") }
-    var text by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf(existingNote?.title?: "") }
+    var text by remember { mutableStateOf(existingNote?.entry?: "") }
     Column(
         modifier = Modifier
             .fillMaxSize()

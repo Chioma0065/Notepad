@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -41,7 +42,12 @@ fun ScreenA(
     val uiState by screenViewModel.uiState.collectAsState()
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .safeDrawingPadding()
+
+
     ) {
 
         ElevatedCard(
@@ -51,7 +57,6 @@ fun ScreenA(
                 .fillMaxWidth()
                 .padding(5.dp)
                 .height(40.dp)
-                .statusBarsPadding()
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
@@ -111,10 +116,9 @@ fun ScreenA(
 
                     }
                 }
-                uiState.note.forEach { note ->
-                    Text(text = note.entry)
-                }
             }
+
+
         }
 
         Box(
@@ -123,7 +127,7 @@ fun ScreenA(
                 .padding(8.dp), contentAlignment = Alignment.CenterEnd
         ) {
             IconButton(onClick = {
-                navController.navigate(Routes.screenB)
+                navController.navigate(Routes.screenBRoutes(-1))
             }) {
 
                 Icon(
@@ -133,4 +137,5 @@ fun ScreenA(
             }
         }
     }
+
 }
