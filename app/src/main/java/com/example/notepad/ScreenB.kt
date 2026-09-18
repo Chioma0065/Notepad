@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,7 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun ScreenB(navController: NavController, viewModel: ScreenViewModel) {
+fun ScreenB(navController: NavController, viewModel: ScreenViewModel, noteIndex: Int) {
+    val uiState by viewModel.uiState.collectAsState()
+    val existingNote = if (noteIndex >= 0) uiState.note.getOrNull(noteIndex) else null
+
     var title by remember { mutableStateOf("") }
     var text by remember { mutableStateOf("") }
     Column(
@@ -58,10 +62,15 @@ fun ScreenB(navController: NavController, viewModel: ScreenViewModel) {
                 modifier = Modifier.width(2.dp)
             )
 
-            IconButton(onClick = {
-                viewModel.noteEntry(title, text)
-                navController.popBackStack()
-            }) {
+            IconButton(
+                onClick = {
+                    if (noteIndex >= 0) {
+                        viewModel.updateNote(noteIndex, title, text)
+                    } else {
+                        viewModel.noteEntry(title, text)
+                    }
+                    navController.popBackStack()
+                }) {
                 Icon(
                     painter = painterResource(R.drawable.baseline_done_24),
                     contentDescription = "Done"

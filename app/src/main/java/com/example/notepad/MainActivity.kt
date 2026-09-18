@@ -5,9 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,9 +26,16 @@ class MainActivity : ComponentActivity() {
                     )
 
                 }
-                composable(Routes.screenB) {
-                    ScreenB(navController, screenViewModel)
+                composable(Routes.screenB,
+                    arguments= listOf(navArgument("noteIndex"){type = NavType.IntType})
+                    ){
+                        backStackEntry ->
+                    val noteIndex = backStackEntry.arguments?.getInt("noteIndex")?: -1
+
+
+                    ScreenB(navController, screenViewModel, noteIndex)
                 }
+
             }
 
         }
