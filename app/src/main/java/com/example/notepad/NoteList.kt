@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
@@ -54,6 +56,8 @@ fun ScreenB(navController: NavController, viewModel: ScreenViewModel, noteIndex:
                 onValueChange = { title = it },
                 label = { Text("TITLE") },
                 singleLine = true,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done),
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier.padding(5.dp)
             )
@@ -82,11 +86,14 @@ fun ScreenB(navController: NavController, viewModel: ScreenViewModel, noteIndex:
             value = text,
             onValueChange = { text = it },
             cursorBrush = SolidColor(Color.Black),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(10.dp)
                 .verticalScroll(rememberScrollState())
         )
+
 
 
     }

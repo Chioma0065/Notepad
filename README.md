@@ -16,21 +16,21 @@ The app uses a simple two-screen navigation flow with a single shared `ViewModel
 ```
 MainActivity
  └── NavHost (navController, screenViewModel)
-      ├── Note_List  (note list)
-      └── Note_Page  (add / edit a note)
+      ├── NoteList  (note list)
+      └── NotePage  (add / edit a note)
 ```
 
 - **`ScreenViewModel`** — holds the list of notes in a `MutableStateFlow`, exposed as a read-only `StateFlow`. It's created once in `MainActivity` and passed down to both screens, so they always observe the same data.
 - **`ScreenUiState`** — the data class representing the screen's state (currently just the list of notes).
 - **`NotePad`** — the data class for a single note (`title`, `entry`).
-- **`Routes`** — defines the navigation routes. `Note_Page` accepts an optional `noteIndex` argument: `-1` means "creating a new note," any value `0` or above means "editing the note at that position in the list."
+- **`Routes`** — defines the navigation routes. `NotePage` accepts an optional `noteIndex` argument: `-1` means "creating a new note," any value `0` or above means "editing the note at that position in the list."
 
 ## Navigation flow
 
-1. `Note_List` displays notes as cards in a `LazyColumn`.
-2. Tapping the **+** button navigates to `Note_Page` with `noteIndex = -1` (new note).
-3. Tapping an existing note navigates to `Note_Page` with that note's index (edit mode) — the screen pre-fills the title and text fields with the existing note's content.
-4. Saving on `Note_Page` either appends a new note or updates the existing one in the shared `ViewModel`, then navigates back to `Note_Page`, which automatically recomposes to show the change.
+1. `NoteList` displays notes as cards in a `LazyColumn`.
+2. Tapping the **+** button navigates to `NotePage` with `noteIndex = -1` (new note).
+3. Tapping an existing note navigates to `NotePage` with that note's index (edit mode) — the screen pre-fills the title and text fields with the existing note's content.
+4. Saving on `NotePage` either appends a new note or updates the existing one in the shared `ViewModel`, then navigates back to `NotePage`, which automatically recomposes to show the change.
 
 ## Tech stack
 
