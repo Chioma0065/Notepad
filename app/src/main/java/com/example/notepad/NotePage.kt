@@ -39,7 +39,11 @@ fun ScreenA(
 
     Scaffold(topBar = {
         TopAppBar(
-            title = { Text("NOTEPAD") })
+            title = {
+                Text(
+                    text = "NOTEPAD",
+                )
+            })
     }, floatingActionButton = {
         FloatingActionButton(
             onClick = {
@@ -73,20 +77,35 @@ fun ScreenA(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (uiState.note.isEmpty()) {
-                    Text("No notes")
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "No notes yet",
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
+                        Text(
+                            text = "Tap + to write your first note",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
+                    }
                 } else {
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         itemsIndexed(uiState.note) { index, note ->
-                            Card(                                          // <- this whole Card block...
+                            Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(8.dp)
                                     .clickable {
                                         navController.navigate(Routes.screenBRoutes(index))
                                     },
-                                colors = CardDefaults.cardColors(            // <- ...gets these two new lines added
+                                colors = CardDefaults.cardColors(
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer
                                 ),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
@@ -94,13 +113,14 @@ fun ScreenA(
                                 Column(
                                     modifier = Modifier.padding(12.dp)
                                 ) {
-                                    Text(text = note.title, fontWeight = FontWeight.Bold)
+                                    Text(text = note.title,
+                                        fontWeight = FontWeight.Bold)
                                     Text(
                                         text = note.entry,
                                         maxLines = 2,
                                         color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
                                             alpha = 0.7f
-                                        )   // <- and this line changes
+                                        )
                                     )
                                 }
                             }

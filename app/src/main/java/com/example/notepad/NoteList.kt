@@ -1,73 +1,50 @@
 package com.example.notepad
 
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScreenB(navController: NavController, viewModel: ScreenViewModel, noteIndex: Int) {
     val uiState by viewModel.uiState.collectAsState()
     val existingNote = if (noteIndex >= 0) uiState.note.getOrNull(noteIndex) else null
 
-    var title by remember { mutableStateOf(existingNote?.title?: "") }
-    var text by remember { mutableStateOf(existingNote?.entry?: "") }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .safeDrawingPadding(),
+    var title by remember { mutableStateOf(existingNote?.title ?: "") }
+    var text by remember { mutableStateOf(existingNote?.entry ?: "") }
 
-        verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Row {
-            TextField(
-                value = title,
-                onValueChange = { title = it },
-                label = { Text("TITLE") },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done),
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.padding(5.dp)
-            )
-
-            Spacer(
-                modifier = Modifier.width(2.dp)
-            )
-
-            IconButton(
-                onClick = {
+    Scaffold(
+        topBar = {
+            TopAppBar(title = { Text(if (noteIndex >= 0) "Edit note" else "New note") }, actions = {
+                IconButton(onClick = {
                     if (noteIndex >= 0) {
                         viewModel.updateNote(noteIndex, title, text)
                     } else {
@@ -75,28 +52,51 @@ fun ScreenB(navController: NavController, viewModel: ScreenViewModel, noteIndex:
                     }
                     navController.popBackStack()
                 }) {
-                Icon(
-                    painter = painterResource(R.drawable.baseline_done_24),
-                    contentDescription = "Done"
-                )
-            }
-        }
-
-        BasicTextField(
-            value = text,
-            onValueChange = { text = it },
-            cursorBrush = SolidColor(Color.Black),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done),
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_done_24),
+                        contentDescription = "Done"
+                    )
+                }
+            })
+        }) { innerPadding ->
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(10.dp)
-                .verticalScroll(rememberScrollState())
-        )
+                .padding(innerPadding)
+        ) {
+            TextField(
+                value = title,
+                onValueChange = { title = it },
+                label = { Text("Title") },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+            )
 
+            HorizontalDivider()
 
+            BasicTextField(
+                value = text,
+                onValueChange = { text = it },
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
+                decorationBox = { innerTextField ->
+                    if (text.isEmpty()) {
+                        Text(
+                            text = "Make a note...",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    innerTextField()
+                })
+        }
 
     }
-
-
 }
