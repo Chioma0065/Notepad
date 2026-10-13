@@ -30,6 +30,19 @@ class ScreenViewModel : ViewModel() {
     }
 
 
+    fun deleteNote(index: Int){
+        _uiState.update { currentState ->
+            if (index !in currentState.note.indices){
+                currentState
+            }else{
+                currentState.copy(
+                    note = currentState.note.filterIndexed {i, _ -> i != index }
+                )
+            }
+        }
+    }
+
+
 }
 
 
