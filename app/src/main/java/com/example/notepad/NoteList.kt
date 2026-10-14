@@ -92,6 +92,9 @@ fun ScreenB(navController: NavController, viewModel: ScreenViewModel, noteIndex:
             BasicTextField(
                 value = text,
                 onValueChange = { text = it },
+                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                 modifier = Modifier
