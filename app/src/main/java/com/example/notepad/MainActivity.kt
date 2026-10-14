@@ -10,32 +10,34 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.notepad.ui.theme.NotepadTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            NotepadTheme {
+                val navController = rememberNavController()
+                val screenViewModel: ScreenViewModel = viewModel()
+                NavHost(navController = navController, startDestination = Routes.screenA) {
+                    composable(Routes.screenA) {
+                        ScreenA(
+                            navController, screenViewModel
+                        )
 
-            val navController = rememberNavController()
-            val screenViewModel: ScreenViewModel = viewModel()
-            NavHost(navController = navController, startDestination = Routes.screenA) {
-                composable(Routes.screenA) {
-                    ScreenA(
-                        navController, screenViewModel
-                    )
+                    }
+                    composable(
+                        Routes.screenB,
+                        arguments = listOf(navArgument("noteIndex") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        val noteIndex = backStackEntry.arguments?.getInt("noteIndex") ?: -1
+
+
+                        ScreenB(navController, screenViewModel, noteIndex)
+                    }
 
                 }
-                composable(Routes.screenB,
-                    arguments= listOf(navArgument("noteIndex"){type = NavType.IntType})
-                    ){
-                        backStackEntry ->
-                    val noteIndex = backStackEntry.arguments?.getInt("noteIndex")?: -1
-
-
-                    ScreenB(navController, screenViewModel, noteIndex)
-                }
-
             }
 
         }
