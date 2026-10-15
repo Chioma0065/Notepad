@@ -62,6 +62,11 @@ fun ScreenA(
                 painter = painterResource(R.drawable.baseline_add_24),
                 contentDescription = "Add note"
             )
+
+            Icon(
+                painter = painterResource(R.drawable.baseline_add_24),
+                contentDescription = "Add another note"
+            )
         }
     }) { innerPadding ->
         Column(
