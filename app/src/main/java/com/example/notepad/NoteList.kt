@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -26,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
@@ -33,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,33 +46,42 @@ fun ScreenB(navController: NavController, viewModel: ScreenViewModel, noteIndex:
     var title by remember { mutableStateOf(existingNote?.title ?: "") }
     var text by remember { mutableStateOf(existingNote?.entry ?: "") }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(title = { Text(if (noteIndex >= 0) "Edit note" else "New note") }, actions = {
-                if (noteIndex >= 0) {
-                    IconButton(onClick = { showDeleteDialog = true }) {
-                        Icon(
-                            painter = painterResource(R.drawable.baseline_delete_24),
-                            contentDescription = "Delete note"
-                        )
-                    }
+    Scaffold(snackbarHost = { SnackbarHostState() }, topBar = {
+        TopAppBar(title = { Text(if (noteIndex >= 0) "Edit note" else "New note") }, actions = {
+            if (noteIndex >= 0) {
+                IconButton(onClick = { showDeleteDialog = true }) {
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_delete_24),
+                        contentDescription = "Delete note"
+                    )
                 }
-                IconButton(onClick = {
+            }
+            IconButton(onClick = {
+                if (title.isBlank() && text.isBlank()) {
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Write a title or some text first")
+                    }
+
+                } else {
+
                     if (noteIndex >= 0) {
                         viewModel.updateNote(noteIndex, title, text)
                     } else {
                         viewModel.noteEntry(title, text)
                     }
                     navController.popBackStack()
-                }) {
-                    Icon(
-                        painter = painterResource(R.drawable.baseline_done_24),
-                        contentDescription = "Done"
-                    )
                 }
-            })
-        }) { innerPadding ->
+            }) {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_done_24),
+                    contentDescription = "Done"
+                )
+            }
+        })
+    }) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -113,11 +125,11 @@ fun ScreenB(navController: NavController, viewModel: ScreenViewModel, noteIndex:
         }
 
     }
-    if (showDeleteDialog){
+    if (showDeleteDialog) {
         AlertDialog(
-            onDismissRequest = {showDeleteDialog = false},
-            title = {Text("Delete Note")},
-            text = { Text("Are you sure")},
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Delete Note") },
+            text = { Text("Are you sure") },
             confirmButton = {
                 TextButton(onClick = {
                     showDeleteDialog = false
@@ -128,10 +140,9 @@ fun ScreenB(navController: NavController, viewModel: ScreenViewModel, noteIndex:
                 }
             },
             dismissButton = {
-                TextButton(onClick = {showDeleteDialog = false}) {
+                TextButton(onClick = { showDeleteDialog = false }) {
                     Text("Cancel")
                 }
-            }
-        )
+            })
     }
 }
