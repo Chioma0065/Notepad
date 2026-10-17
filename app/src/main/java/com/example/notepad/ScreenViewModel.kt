@@ -30,19 +30,35 @@ class ScreenViewModel : ViewModel() {
     }
 
 
-    fun deleteNote(index: Int){
+    fun deleteNote(index: Int) {
         _uiState.update { currentState ->
-            if (index !in currentState.note.indices){
+            val removed = currentState.note.getOrNull(index)
+            if (removed == null) {
                 currentState
-            }else{
+            } else {
                 currentState.copy(
-                    note = currentState.note.filterIndexed {i, _ -> i != index }
+                    note = currentState.note.filterIndexed { i, _ -> i != index },
+                    lastDeleted = DeletedNote(index, removed)
                 )
             }
         }
     }
 
+    fun undoDelete() {
+        _uiState.update { currentState ->
+            val deleted = currentState.lastDeleted
+            if (deleted == null) {
+                currentState
+            } else {
+                val restored = currentState.note.toMutableList()
+                restored.add(deleted.index.coerceIn(0, restored.size), deleted.note)
+                currentState.copy(note = restored, lastDeleted = null)
+            }
+        }
+    }
 
+    fun clearLastDeleted() {
+        _uiState.update { it.copy(lastDeleted = null) }
+    }
 }
-
 
